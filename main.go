@@ -13,6 +13,7 @@ func main() {
 
 	api := app.Group("/api")
 	routes.SetupAuthRoutes(api, db)
+	routes.SetupNoteRoutes(api, db)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Welcome to Go Notes API!")
