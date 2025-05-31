@@ -9,10 +9,10 @@ import(
 func main() {
 	app := fiber.New()
 
-	utils.ConnectDatabase()
+	db := utils.ConnectDatabase()
 
 	api := app.Group("/api")
-	routes.SetupAuthRoutes(api)
+	routes.SetupAuthRoutes(api, db)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Welcome to Go Notes API!")

@@ -8,6 +8,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Navya123
       MYSQL_DATABASE: go_notes
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
     ports:
       - "3307:3306"
     volumes:
@@ -17,12 +19,22 @@ services:
     build: .
     container_name: go_notes_app
     restart: always
+    environment:
+      DB_USER: root
+      DB_PASSWORD: Navya123
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: go_notes
     ports:
       - "3000:3000"
     env_file:
       - .env
     depends_on:
       - db
+    volumes:
+      - .:/app
+    command: go run main.go
 
 volumes:
   db_data:
+

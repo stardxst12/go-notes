@@ -13,7 +13,7 @@ import(
 
 var DB *gorm.DB
 
-func ConnectDatabase(){
+func ConnectDatabase() *gorm.DB{
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -27,13 +27,14 @@ func ConnectDatabase(){
 		os.Getenv("DB_NAME"),
 	)
 
-	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
 	}
 
 	// Auto-migrate models
-	database.AutoMigrate(&models.User{}, &models.Note{})
+	db.AutoMigrate(&models.User{}, &models.Note{})
 
-	DB = database
+	DB = db
+	return db
 }
