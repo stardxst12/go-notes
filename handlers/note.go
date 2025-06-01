@@ -38,6 +38,23 @@ func GetNote(db *gorm.DB) fiber.Handler {
 	}
 }
 
+func GetNoteByID(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		userID := c.Locals("userID").(uint)
+		noteID := c.Params("id")
+
+		var note models.Note
+		result := utils.DB.Where("id = ? AND user_id = ?", noteID, userID).First(&note)
+		if result.Error != nil {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": "Note not found or unauthorized",
+			})
+		}
+
+		return c.JSON(note)
+	}
+}
+
 func UpdateNote(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		userID := c.Locals("userID").(uint)
@@ -87,4 +104,5 @@ func DeleteNote(db *gorm.DB) fiber.Handler {
 
 	}
 }
-// We'll add other handlers like GetNoteByID, UpdateNote, DeleteNote next
+
+
