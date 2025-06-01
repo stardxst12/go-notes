@@ -18,11 +18,11 @@ func JWTProtected() fiber.Handler {
 			})
 		}
 
-		// Extract token from "Bearer <token>"
+		//extracting token from "Bearer <token>"
 		token := strings.TrimPrefix(authHeader, "Bearer ")
 		log.Println("[JWT] Extracted token:", token)
 
-		// Validate the token and get the user ID
+		//validating the token & getting the user ID
 		userID, err := utils.ValidateJWT(token)
 		if err != nil {
 			log.Printf("[JWT Middleware] Token validation error: %v\n", err)
@@ -32,7 +32,7 @@ func JWTProtected() fiber.Handler {
 		}
 		log.Println("[JWT] Token valid. User ID:", userID)
 
-		// Store the user ID in the context
+		//storing the user ID in the context
 		c.Locals("userID", userID)
 
 		return c.Next()

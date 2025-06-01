@@ -19,7 +19,7 @@ func GenerateJWT(userID uint) (string, error) {
 }
 
 func ValidateJWT(tokenStr string) (uint, error) {
-	// Parse token with MapClaims (since you generate with MapClaims)
+	//parsing token
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})

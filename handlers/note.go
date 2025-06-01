@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"go-notes-api/models"
 	"go-notes-api/utils"
+	"strconv"
 )
 
 func CreateNote(db *gorm.DB) fiber.Handler {
@@ -29,8 +30,30 @@ func GetNote(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		userID := c.Locals("userID").(uint)
 
+		//query params
+		page, _ := strconv.Atoi(c.Query("page", "1"))
+		limit, _ := strconv.Atoi(c.Query("limit", "10"))
+		title := c.Query("title", "")
+
+		if page < 1 {
+			page = 1
+		}
+		if limit < 1 {
+			limit = 10
+		}
+
+		offset := (page - 1) * limit
+
 		var notes []models.Note
-		if err := db.Where("user_id = ?", userID).Find(&notes).Error; err != nil {
+		query := db.Where("user_id = ?", userID)
+
+		if title != "" {
+			query = query.Where("title LIKE ?", "%"+title+"%")
+		}
+
+		result := query.Limit(limit).Offset(offset).Find(&notes)
+		
+		if result.Error != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to fetch notes"})
 		}
 
